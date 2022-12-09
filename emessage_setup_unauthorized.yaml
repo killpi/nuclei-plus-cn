@@ -1,0 +1,32 @@
+id: emessage_setup_unauthorized
+
+info:
+  name: E-message
+  author: xiaohe
+  severity: high
+  description: E-message 存在越权访问漏洞，由于配置页面没有做权限设定，导致攻击者可以访问并重置账号密码等操作
+  reference:
+    - http://175.24.180.248/PeiQi_Wiki/Web%E5%BA%94%E7%94%A8%E6%BC%8F%E6%B4%9E/E-message/E-message%20%E8%B6%8A%E6%9D%83%E8%AE%BF%E9%97%AE%E6%BC%8F%E6%B4%9E.html
+  metadata:
+    verified: true
+    fofa: 'title="emessage 设置: 数据库设置 - 标准连接'
+  tags: unauth,emessage
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/setup/setup-datasource-standard.jsp"
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - 'emessage 设置: 数据库设置 - 标准连接'
+          - 'type="password"'
+        condition: and
+        
+      - type: status
+        status:
+          - 200

