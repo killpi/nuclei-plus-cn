@@ -1,0 +1,34 @@
+id: tongda_v11_6_print_php_file_delete_RCE
+
+info:
+  name: Office Anywhere TongDa - file_delete
+  author: xiaohe
+  severity: critical
+  description: |
+    通达OA v11.6 print.php 任意文件删除&RCE.
+  reference:
+    - https://xz.aliyun.com/t/8430
+  tags: tongda,filedelete,rce
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/module/appbuilder/assets/print.php?guid=xxxxx"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "未知参数"
+
+      - type: word
+        part: header
+        words:
+          - "text/html"
+
+      - type: status
+        status:
+          - 200
+
+

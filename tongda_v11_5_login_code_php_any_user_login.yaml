@@ -1,0 +1,30 @@
+id: tongda_v11_5_login_code_php_any_user_login
+
+info:
+  name: Office Anywhere TongDa - any_user_login
+  author: xiaohe
+  severity: critical
+  description: |
+    通达OA是一套办公系统。2020年04月17日, 通达OA官方在更新了一个v11版本安全补丁, 其中修复了一个任意用户伪造登录漏洞。该漏洞类型为任意用户伪造，未经授权的远程攻击者可以通过精心构造的请求包进行任意用户伪造登录。
+  reference:
+    - https://l3yx.github.io/2020/04/27/%E9%80%9A%E8%BE%BEOA-%E4%BB%BB%E6%84%8F%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E6%BC%8F%E6%B4%9E/
+  tags: tongda
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/general/login_code.php"
+      - "{{BaseURL}}/ispirit/login_code.php"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "status"
+          - "code_uid"
+        condition: and
+
+      - type: status
+        status:
+          - 200
