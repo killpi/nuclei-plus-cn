@@ -15,7 +15,7 @@ requests:
         User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0
 
         pid%5B0%5D=../2345dse.txt&send=%E5%88%A0%E9%99%A4%E9%80%89%E4%B8%AD%E5%9B%BE%E7%89%87
-   
+    matchers-condition: and
     matchers:
       - type: word
         part: body
