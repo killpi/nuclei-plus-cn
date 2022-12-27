@@ -1,0 +1,33 @@
+id: zhiyuan-oa-createMysql-leak
+
+info:
+  name: createMysql.jsp 数据库敏感信息泄露
+  author: xiaohe
+  severity: high
+  description: createMysql.jsp 数据库敏感信息泄露
+  reference:
+    - https://mp.weixin.qq.com/s?__biz=MzIwMDcyNzM0Mw==&mid=2247485029&idx=1&sn=1bbe24fd063d75e35a4d24db5e8edd0f
+  metadata:
+    verified: true
+    fofa: body="yyoa" && app="致远互联-OA""
+  tags: zhiyuan,leak
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/yyoa/createMysql.jsp"
+      - "{{BaseURL}}/yyoa/ext/createMysql.jsp"
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - 'root'
+          - 'ROOT'
+        condition: or
+        
+      - type: status
+        status:
+          - 200

